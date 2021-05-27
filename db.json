@@ -1,0 +1,25 @@
+{
+    "name": "SambaFSMO",
+    "publisher": "Administrator",
+    "version": "0.0.1",
+    "version_code": 4,
+    "database": [
+        {
+            "variable": "smb_username",
+            "type": "text",
+            "name": "Samba Kullan\u0131c\u0131 Ad\u0131",
+            "required": true
+        }
+    ],
+    "widgets": [],
+    "language": "php",
+    "status": 0,
+    "service": null,
+    "supportedLiman": "1.7.0",
+    "support": "administrator@liman.dev",
+    "icon": "id-card",
+    "require_key": "false",
+    "verification": null,
+    "dependencies": null,
+    "sslPorts": null
+}
