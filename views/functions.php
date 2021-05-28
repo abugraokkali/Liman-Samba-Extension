@@ -56,7 +56,12 @@
 
     function takeTheRole(){
         $contraction = request("contraction");
-        $output=runCommand(sudo()."samba-tool fsmo transfer --role=$contraction -UAdministrator}");
+        $output=runCommand(sudo()."samba-tool fsmo transfer --role=$contraction -UAdministrator");
+        return respond($output,200);
+    }
+    function takeAllRoles(){
+        $output=runCommand(sudo()."samba-tool fsmo transfer --role=all -UAdministrator");
+        //$outputList = explode("\n",$output);
         return respond($output,200);
     }
 ?>
