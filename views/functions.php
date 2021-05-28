@@ -6,46 +6,57 @@
     function tab1(){
         $allData = runCommand(sudo()."samba-tool fsmo show");
         $allDataList = explode("\n",$allData);
-
+        $dict = [
+            "SchemaMasterRole" => "schema",
+            "InfrastructureMasterRole" => "infrastructure",
+            "RidAllocationMasterRole" => "rid",
+            "PdcEmulationMasterRole" => "pdc",
+            "DomainNamingMasterRole" => "naming",
+            "DomainDnsZonesMasterRole" => "domaindns",
+            "ForestDnsZonesMasterRole" => "forestdns",
+        ];
         $data = [];
         for($i=0; $i<count($allDataList); $i++){
             $item = $allDataList[$i];
             $itemList = explode(",",$item);
 
-            $nameList = explode("=",$itemList[1]);
-            $nameItem = $nameList[1];
+            $nameItem = explode("=",$itemList[1]);
+            $nameItem = $nameItem[1];
 
             if ($nameItem != "") {
-                $roleList = explode(" ",$itemList[0]);
-                $roleItem = $roleList[0];
-
+                $roleItem = explode(" ",$itemList[0]);
+                $roleItem = $roleItem[0];
                 $data[] = [
                     "role" => $roleItem,
-                    "name" => $nameItem
+                    "name" => $nameItem,
+                    "contraction" => $dict[$roleItem]
                     
-                ];
-                
+                ];  
             }
       
         }
-        
-           
         return view('table', [
             "value" => $data,
-            "title" => ["Role","Server"],
+            "title" => ["Role","Hostname","*hidden*"],
+            "display" => ["role","name","contraction:contraction"],
             "menu" => [
 
                 "Take on the role" => [
-
+                    "target" => "takeTheRole",
+                    "icon" => "fa-file-export"
                 ],
     
             ],
-            "display" => ["role","name"],
         ]);
     }
 
     function tab2(){
         return respond(runCommand(sudo()."samba-tool fsmo show"),200);
     }
-    
+
+    function takeTheRole(){
+        $contraction = request("contraction");
+        $output=runCommand(sudo()."samba-tool fsmo transfer --role=$contraction -UAdministrator}");
+        return respond($output,200);
+    }
 ?>

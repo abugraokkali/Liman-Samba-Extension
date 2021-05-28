@@ -51,4 +51,28 @@
             $('#tab2').html("Hata oluştu");
         });
     }
+
+    function takeTheRole(line,a){
+        var form = new FormData();
+        let contraction = line.querySelector("#contraction").innerHTML;
+        form.append("contraction",contraction);
+
+        request("{{API('takeTheRole')}}", form, function(response) {
+            message = JSON.parse(response)["message"];
+            if(message == ""){
+                showSwal('Error', 'error', 7000);
+            }
+            else if(message.includes("successful")){
+                tab1();
+                showSwal(message,'success',7000);
+            }
+            else{
+                showSwal(message,'info',7000);
+            }
+        }, function(error) {
+            showSwal(error.message, 'error', 5000);
+
+        });
+    }
+    
 </script>
