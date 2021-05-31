@@ -37,11 +37,11 @@
         }
         return view('table', [
             "value" => $data,
-            "title" => ["Role","Hostname","*hidden*"],
+            "title" => ["Rol","Sunucu","*hidden*"],
             "display" => ["role","name","contraction:contraction"],
             "menu" => [
 
-                "Take on the role" => [
+                "Bu rolü al" => [
                     "target" => "takeTheRole",
                     "icon" => "fa-file-export"
                 ],
@@ -61,7 +61,6 @@
     }
     function takeAllRoles(){
         $output=runCommand(sudo()."samba-tool fsmo transfer --role=all -UAdministrator");
-        //$outputList = explode("\n",$output);
         return respond($output,200);
     }
 ?>
