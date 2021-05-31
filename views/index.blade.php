@@ -47,7 +47,7 @@
 
 <div class="tab-content">
     <div id="tab1" class="tab-pane active">
-        <button class="btn btn-success mb-2" id="btnn1" onclick="showInfoModal()" type="button">Tüm rolleri al</button>
+        <button class="btn btn-success mb-2" id="btn1" onclick="showInfoModal()" type="button">Tüm rolleri al</button>
         <button class="btn btn-success mb-2" id="btn2" onclick="showChangeModal()" type="button">Belirli bir rolü al</button>
         <div class="table-responsive" id="fsmoTable"></div>
     </div>
