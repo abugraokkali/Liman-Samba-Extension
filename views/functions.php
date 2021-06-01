@@ -2,7 +2,7 @@
     function index(){
         return view('index');
     }
-
+    // == Tab 1 FSMO ==
     function tab1(){
         $allData = runCommand(sudo()."samba-tool fsmo show");
         $allDataList = explode("\n",$allData);
@@ -50,10 +50,6 @@
         ]);
     }
 
-    function tab2(){
-        return respond(runCommand(sudo()."samba-tool fsmo show"),200);
-    }
-
     function takeTheRole(){
         $contraction = request("contraction");
         $output=runCommand(sudo()."samba-tool fsmo transfer --role=$contraction -UAdministrator");
@@ -63,4 +59,14 @@
         $output=runCommand(sudo()."samba-tool fsmo transfer --role=all -UAdministrator");
         return respond($output,200);
     }
+    
+
+    // == Tab 2 Migration ==
+    function migrate(){
+        $ip = request("ip");
+        $username = request("username");
+        $password = request("password");
+        return respond($ip.$username.$password,200);
+    }
+
 ?>
