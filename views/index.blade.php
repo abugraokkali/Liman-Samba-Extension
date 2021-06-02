@@ -75,6 +75,7 @@
         <h1>{{ __(' Migration İşlemleri') }}</h1>
         <br />
         <button class="btn btn-success mb-2" id="btn3" onclick="showMigrationModal()" type="button">Migrate</button>
+        <button class="btn btn-success mb-2" id="btn4" onclick="ldap()" type="button">LDAP</button>
         <div class="text-area" id="textarea"></div>
     </div>
     
@@ -119,12 +120,12 @@
             else if(message.includes("already")){
                 showSwal(message,'info',7000);
             }
-            else if(message.includes("WERR_HOST_UNREACHABLE")){
-                showSwal('HOST_UNREACHABLE \nTrying to seize... ','info',5000);
+            else if(message.includes("WERR_FILE_NOT_FOUND")){
+                showSwal('WERR_FILE_NOT_FOUND \nTrying to seize... ','info',5000);
                 seizeTheRole(contraction);
             }                
             else{
-                showSwal('Hata oluştu.', 'error', 7000);
+                showSwal(message, 'error', 7000);
             }
         }, function(error) {
             showSwal(error.message, 'error', 5000);
@@ -185,8 +186,8 @@
             else if(message.includes("already")){
                 showSwal(message,'info',7000);
             }
-            else if(message.includes("WERR_HOST_UNREACHABLE")){                
-                showSwal('HOST_UNREACHABLE \nTrying to seize... ','info',5000);
+            else if(message.includes("WERR_FILE_NOT_FOUND")){                
+                showSwal('WERR_FILE_NOT_FOUND \nTrying to seize... ','info',5000);
                 seizeTheRole(contraction);
             }                
             else{
