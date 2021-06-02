@@ -58,7 +58,10 @@
         <a class="nav-link active"  onclick="tab1()" href="#tab1" data-toggle="tab">FSMO Rol Yönetimi</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link " href="#tab2" data-toggle="tab">Migration İşlemi</a>
+        <a class="nav-link " onclick="tab2()" href="#tab2"  data-toggle="tab">Migration İşlemi</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link " href="#tab3"  data-toggle="tab">LDAP İşlemleri</a>
     </li>
 </ul>
 
@@ -72,11 +75,16 @@
     </div>
 
     <div id="tab2" class="tab-pane">
-        <h1>{{ __(' Migration İşlemleri') }}</h1>
+        <h1>{{ __(' Migration İşlemi') }}</h1>
         <br />
         <button class="btn btn-success mb-2" id="btn3" onclick="showMigrationModal()" type="button">Migrate</button>
-        <button class="btn btn-success mb-2" id="btn4" onclick="ldap()" type="button">LDAP</button>
         <div class="text-area" id="textarea"></div>
+    </div>
+    <div id="tab3" class="tab-pane">
+        <h1>{{ __(' LDAP İşlemleri') }}</h1>
+        <br />
+        <button class="btn btn-success mb-2" id="btn4" onclick="ldap()" type="button">Connect</button>
+      
     </div>
     
 </div>
@@ -202,6 +210,22 @@
 
     // #### Tab2 Migration ####
 
+    function tab2(){
+        var form = new FormData();
+        let x = document.getElementById("btn3");
+
+        request(API('check'), form, function(response) {
+            message = JSON.parse(response)["message"];
+            if(message==false){
+                x.disabled = true;
+                $('#textarea').html("Bu sunucu migrate edilemez.");
+            }
+        }, function(error) {
+            showSwal(error.message, 'error', 5000);
+        });
+    }
+
+    //== Migration Modal ==
     function showMigrationModal(){
         showSwal('Yükleniyor...','info',2000);
         $('#migrationModal').modal("show");
@@ -214,14 +238,21 @@
         form.append("password", $('#migrationModal').find('input[name=password]').val());
         
         request(API('migrate'), form, function(response) {
-            message = JSON.parse(response)["message"];
-            $('#textarea').html(
-                "<pre>"+message+"</pre>"
-            );
+            //message = JSON.parse(response)["message"];
+            
+            if(response){
+                tab2();
+                showSwal('Migration başarılı', 'success', 7000);
+            }
+            else{
+                showSwal('Migration başarısız', 'error', 7000);
+            }
+
         }, function(error) {
             showSwal(error.message, 'error', 5000);
         });
     }
+    
 
 
 </script>

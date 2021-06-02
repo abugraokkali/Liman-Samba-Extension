@@ -74,8 +74,39 @@
         $ip = request("ip");
         $username = request("username");
         $password = request("password");
-        $output=runCommand(sudo()."smb-migrate-domain -s ".$ip." -a ".$username." -p ".$password,200);
-        return respond($output,200);
+        runCommand(sudo()."smb-migrate-domain -s ".$ip." -a ".$username." -p ".$password,200);
+        $condition = check2();
+        if($condition)
+            return respond(false,200);
+        else
+            return respond(true,200);
+
+    }
+    function check(){
+
+        $output=runCommand(sudo()."net ads info",200);
+        if($output=="")
+            $output=runCommand(sudo()."net ads info 2>&1",200);
+            
+        if(strpos($output, "Can't load /etc/samba/smb.conf") !== false){
+            return respond(true,200);
+        }
+        else{
+            return respond(false,200);
+        }
+    }
+    function check2(){
+
+        $output=runCommand(sudo()."net ads info",200);
+        if($output=="")
+            $output=runCommand(sudo()."net ads info 2>&1",200);
+            
+        if(strpos($output, "Can't load /etc/samba/smb.conf") !== false){
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 
 ?>
