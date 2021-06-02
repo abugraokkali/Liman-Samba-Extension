@@ -43,7 +43,7 @@
 
                 "Bu rolü al" => [
                     "target" => "takeTheRole",
-                    "icon" => "fa-file-export"
+                    "icon" => "fa-share"
                 ],
     
             ],
