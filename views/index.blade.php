@@ -74,7 +74,7 @@
     <div id="tab2" class="tab-pane">
         <h1>{{ __(' Migration İşlemleri') }}</h1>
         <br />
-        <button class="btn btn-success mb-2" id="btn3" onclick="showMigrationModal()" type="button">Migrate et</button>
+        <button class="btn btn-success mb-2" id="btn3" onclick="showMigrationModal()" type="button">Migrate</button>
         <div class="text-area" id="textarea"></div>
     </div>
     
@@ -85,8 +85,9 @@
    if(location.hash === ""){
         tab1();
     }
-    // == Tab1 FSMO ==
-    //table
+    // #### Tab1 FSMO ####
+
+    // == Printing Table ==
     function tab1(){
         showSwal('Yükleniyor...','info',2000);
         var form = new FormData();
@@ -103,7 +104,7 @@
         });
         
     }
-    //role transfer
+    // == Transfer Role ==
     function takeTheRole(line){
         var form = new FormData();
         let contraction = line.querySelector("#contraction").innerHTML;
@@ -111,22 +112,39 @@
 
         request(API('takeTheRole'), form, function(response) {
             message = JSON.parse(response)["message"];
-            if(message == ""){
-                showSwal('Hata oluştu.', 'error', 7000);
-            }
-            else if(message.includes("successful")){
+            if(message.includes("successful")){
                 tab1();
                 showSwal(message,'success',7000);
             }
-            else{
+            else if(message.includes("already")){
                 showSwal(message,'info',7000);
+            }
+            else if(message.includes("WERR_HOST_UNREACHABLE")){
+                seizeTheRole(contraction);
+            }                
+            else{
+                showSwal('Hata oluştu.', 'error', 7000);
             }
         }, function(error) {
             showSwal(error.message, 'error', 5000);
-
         });
     }
-    //information modal
+
+    // == Seize Role ==
+    function seizeTheRole(contraction){
+        var form = new FormData();
+        form.append("contraction",contraction);
+        request(API('seizeTheRole'), form, function(response) {
+            message = JSON.parse(response)["message"];
+            tab1();
+            showSwal(message, 'success', 5000); 
+            
+        }, function(error) {
+            showSwal(error.message, 'error', 5000);
+        });
+    }
+
+    // == Information Modal ==
     function showInfoModal(line){
         showSwal('Yükleniyor...','info',3500);
         var form = new FormData();
@@ -141,58 +159,63 @@
 
         });
     }
-
     function hideInfoModal(line){
         $('#infoModal').modal("hide");
         tab1();
     }
-    //change modal
+
+    // == Change Modal ==
     function showChangeModal(){
         showSwal('Yükleniyor...','info',2000);
         $('#changeModal').modal("show");
     }
     function hideChangeModal(){
         var form = new FormData();
-        form.append("contraction", $('#changeModal').find('select[name=newType]').val());
+        let contraction = $('#changeModal').find('select[name=newType]').val();
+        form.append("contraction",contraction);
+        $('#changeModal').modal("hide");
+        showSwal('Yükleniyor...','info',5000);
         request(API('takeTheRole'), form, function(response) {
             message = JSON.parse(response)["message"];
-            $('#changeModal').modal("hide");
-            if(message == ""){
-                showSwal('Hata oluştu.', 'error', 7000);
-            }
-            else if(message.includes("successful")){
+            if(message.includes("successful")){
                 tab1();
                 showSwal(message,'success',7000);
             }
-            else{
+            else if(message.includes("already")){
                 showSwal(message,'info',7000);
             }
-
+            else if(message.includes("WERR_HOST_UNREACHABLE")){
+                seizeTheRole(contraction);
+            }                
+            else{
+                showSwal('Hata oluştu.', 'error', 7000);
+            }
         }, function(error) {
             $('#changeModal').modal("hide");
             showSwal(error.message, 'error', 5000);
         });
     }
-    // == Tab2 Migration ==
 
+
+    // #### Tab2 Migration ####
+    
     function showMigrationModal(){
         showSwal('Yükleniyor...','info',2000);
         $('#migrationModal').modal("show");
     }
     function hideMigrationModal(){
         var form = new FormData();
-        
+        $('#migrationModal').modal("hide");
         form.append("ip", $('#migrationModal').find('input[name=ipAddr]').val());
         form.append("username", $('#migrationModal').find('input[name=username]').val());
         form.append("password", $('#migrationModal').find('input[name=password]').val());
-
+        
         request(API('migrate'), form, function(response) {
             message = JSON.parse(response)["message"];
-            showSwal(message,'info',7000);
-            $('#migrationModal').modal("hide");
-
+            $('#textarea').html(
+                "<pre>"+message+"</pre>"
+            );
         }, function(error) {
-            $('#migrationModal').modal("hide");
             showSwal(error.message, 'error', 5000);
         });
     }

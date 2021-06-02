@@ -53,10 +53,18 @@
     function takeTheRole(){
         $contraction = request("contraction");
         $output=runCommand(sudo()."samba-tool fsmo transfer --role=$contraction -UAdministrator");
+        if($output == ""){
+            $output=runCommand(sudo()."samba-tool fsmo transfer --role=$contraction -UAdministrator 2>&1");
+        }
         return respond($output,200);
     }
     function takeAllRoles(){
         $output=runCommand(sudo()."samba-tool fsmo transfer --role=all -UAdministrator");
+        return respond($output,200);
+    }
+    function seizeTheRole(){
+        $contraction = request("contraction");
+        $output=runCommand(sudo()."samba-tool fsmo seize --role=$contraction -UAdministrator");
         return respond($output,200);
     }
     
@@ -66,7 +74,8 @@
         $ip = request("ip");
         $username = request("username");
         $password = request("password");
-        return respond($ip.$username.$password,200);
+        $output=runCommand(sudo()."smb-migrate-domain -s ".$ip." -a ".$username." -p ".$password,200);
+        return respond($output,200);
     }
 
 ?>
