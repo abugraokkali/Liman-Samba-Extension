@@ -120,6 +120,7 @@
                 showSwal(message,'info',7000);
             }
             else if(message.includes("WERR_HOST_UNREACHABLE")){
+                showSwal('HOST_UNREACHABLE \nTrying to seize... ','info',5000);
                 seizeTheRole(contraction);
             }                
             else{
@@ -184,7 +185,8 @@
             else if(message.includes("already")){
                 showSwal(message,'info',7000);
             }
-            else if(message.includes("WERR_HOST_UNREACHABLE")){
+            else if(message.includes("WERR_HOST_UNREACHABLE")){                
+                showSwal('HOST_UNREACHABLE \nTrying to seize... ','info',5000);
                 seizeTheRole(contraction);
             }                
             else{
@@ -198,7 +200,7 @@
 
 
     // #### Tab2 Migration ####
-    
+
     function showMigrationModal(){
         showSwal('Yükleniyor...','info',2000);
         $('#migrationModal').modal("show");
