@@ -112,5 +112,35 @@
             return false;
         }
     }
-
+    // == LDAP ==
+    function connect_ldap(){
+        $domainname= "ali.lab";
+        $user = "administrator@".$domainname;
+        $pass = "123123Aa";
+        $server = 'ldaps://192.168.1.68';
+        $port="636";
+        $binddn = "DC=ali,DC=lab";
+        $ldap = ldap_connect($server);
+        //return respond($ldap,200);
+        ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);
+        ldap_set_option($ldap, LDAP_OPT_X_TLS_REQUIRE_CERT, LDAP_OPT_X_TLS_NEVER);
+        ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0);
+        //ldap_start_tls($ldap);
+    
+        $bind=ldap_bind($ldap, $user, $pass);
+        if (!$bind) {
+            exit('Binding failed');
+        }
+        //$info = ldapsearchuser("administrator",$searchbase,$domainname,$ldap);
+        ldap_close($ldap);
+        //$info[2][3]["name"]
+        return respond("ok",200);
+        
+    }
+    function ldapsearchuser($cn,$dn,$domainname,$ldap) {
+        $dn_user="CN=".$cn;
+        $search = ldap_search($ldap, $dn, $dn_user);
+        $info = ldap_get_entries($ldap, $search);
+        return $info;
+    }
 ?>
