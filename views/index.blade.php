@@ -77,7 +77,7 @@
     <div id="tab2" class="tab-pane">
         <h1>{{ __(' Migration İşlemi') }}</h1>
         <br />
-        <button class="btn btn-success mb-2" id="btn3" onclick="showMigrationModal()" type="button">Migrate</button>
+        <button class="btn btn-success mb-2" id="btn3" onclick="showMigrationModal()" type="button">Migrate Et</button>
         <div class="text-area" id="textarea"></div>
     </div>
     <div id="tab3" class="tab-pane">
@@ -239,13 +239,21 @@
         
         request(API('migrate'), form, function(response) {
             //message = JSON.parse(response)["message"];
-            
-            if(response){
+            console.log(response);
+            if(response == true){
+                showSwal('Migration başarısız', 'error', 7000);
+            }
+            else if(response == false){
+                tab2();
+                showSwal('Migration başarılı', 'success', 7000);
+            }
+            else if(response == ""){
                 tab2();
                 showSwal('Migration başarılı', 'success', 7000);
             }
             else{
-                showSwal('Migration başarısız', 'error', 7000);
+                showSwal('Migration başarısız...', 'error', 7000);
+
             }
 
         }, function(error) {
