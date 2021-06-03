@@ -67,7 +67,8 @@
 
 <div class="tab-content">
     <div id="tab1" class="tab-pane active">
-        <h1>{{ __(' FSMO Rol Yönetimi') }}</h1>
+        <br />
+        <p>Tablo üzerinde sağ tuş ile bir rolü üzerinize alabilir veya bunun için butonları kullanabilirsiniz.</p>
         <br />
         <button class="btn btn-success mb-2" id="btn1" onclick="showInfoModal()" type="button">Tüm rolleri al</button>
         <button class="btn btn-success mb-2" id="btn2" onclick="showChangeModal()" type="button">Belirli bir rolü al</button>
@@ -75,11 +76,12 @@
     </div>
 
     <div id="tab2" class="tab-pane">
-        <h1>{{ __(' Migration İşlemi') }}</h1>
+        <br />
+        <div class="text-area" id="textarea"></div>
         <br />
         <button class="btn btn-success mb-2" id="btn3" onclick="showMigrationModal()" type="button">Migrate Et</button>
-        <div class="text-area" id="textarea"></div>
     </div>
+
     <div id="tab3" class="tab-pane">
         <h1>{{ __(' LDAP İşlemleri') }}</h1>
         <br />
@@ -213,12 +215,18 @@
     function tab2(){
         var form = new FormData();
         let x = document.getElementById("btn3");
+        x.disabled = true;
+        $('#textarea').html("Sunucu kontrol ediliyor lütfen bekleyiniz ... ");
 
         request(API('check'), form, function(response) {
             message = JSON.parse(response)["message"];
             if(message==false){
                 x.disabled = true;
-                $('#textarea').html("Bu sunucu migrate edilemez.");
+                $('#textarea').html("Bu sunucu bu işlem için uygun değil.");
+            }
+            else{
+                x.disabled = false;
+                $('#textarea').html("Migration işlemi için aşağıdaki butonu kullanabilirsiniz.");
             }
         }, function(error) {
             showSwal(error.message, 'error', 5000);
@@ -236,6 +244,7 @@
         form.append("ip", $('#migrationModal').find('input[name=ipAddr]').val());
         form.append("username", $('#migrationModal').find('input[name=username]').val());
         form.append("password", $('#migrationModal').find('input[name=password]').val());
+        showSwal('İşleminiz devam ediyor', 'info', 30000);
         
         request(API('migrate'), form, function(response) {
             //message = JSON.parse(response)["message"];
@@ -261,6 +270,16 @@
         });
     }
     
-
+    // #### LDAP ####
+    function ldap(){
+        var form = new FormData();
+        
+            message = JSON.parse(response)["message"];
+            showSwal(message, 'info', 5000);
+            
+        }, function(error) {
+            showSwal(error.message, 'error', 5000);
+        });
+    }
 
 </script>
