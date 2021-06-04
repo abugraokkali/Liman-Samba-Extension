@@ -113,7 +113,7 @@
         }
     }
     // == LDAP ==
-    function connect_ldap(){
+    function connect(){
         $domainname= "ali.lab";
         $user = "administrator@".$domainname;
         $pass = "123123Aa";
@@ -121,7 +121,6 @@
         $port="636";
         $binddn = "DC=ali,DC=lab";
         $ldap = ldap_connect($server);
-        //return respond($ldap,200);
         ldap_set_option($ldap, LDAP_OPT_PROTOCOL_VERSION, 3);
         ldap_set_option($ldap, LDAP_OPT_X_TLS_REQUIRE_CERT, LDAP_OPT_X_TLS_NEVER);
         ldap_set_option($ldap, LDAP_OPT_REFERRALS, 0);
@@ -131,11 +130,10 @@
         if (!$bind) {
             exit('Binding failed');
         }
-        //$info = ldapsearchuser("administrator",$searchbase,$domainname,$ldap);
+        return $ldap;
+    }
+    function close($ldap){
         ldap_close($ldap);
-        //$info[2][3]["name"]
-        return respond("ok",200);
-        
     }
     function ldapsearchuser($cn,$dn,$domainname,$ldap) {
         $dn_user="CN=".$cn;
@@ -143,4 +141,55 @@
         $info = ldap_get_entries($ldap, $search);
         return $info;
     }
+
+    function list_users(){
+        $ldap = connect();
+
+        $filter = "objectClass=user";
+        $result = ldap_search($ldap, "CN=Users,DC=ali,DC=lab", $filter);
+        $entries = ldap_get_entries($ldap,$result);
+
+        $count = ldap_count_entries($ldap, $result);
+        $data = [];
+        for($i=0 ; $i<$count ; $i++){
+            $nameItem = $entries[$i]["name"][0];
+            $data[] = [
+                "name" => $nameItem
+            ];
+        }
+        close($ldap);
+
+        return view('table', [
+            "value" => $data,
+            "title" => ["Kullanıcılar"],
+            "display" => ["name"]
+        ]);
+
+    }
+
+    function list_computers(){
+        $ldap = connect();
+
+        $filter = "objectClass=computer";
+        $result = ldap_search($ldap, "DC=ali,DC=lab", $filter);
+        $entries = ldap_get_entries($ldap,$result);
+
+        $count = ldap_count_entries($ldap, $result);
+        $data = [];
+        for($i=0 ; $i<$count ; $i++){
+            $nameItem = $entries[$i]["name"][0];
+            $data[] = [
+                "name" => $nameItem
+            ];
+        }
+        close($ldap);
+
+        return view('table', [
+            "value" => $data,
+            "title" => ["Bilgisayarlar"],
+            "display" => ["name"]
+        ]);
+
+    }
+    
 ?>

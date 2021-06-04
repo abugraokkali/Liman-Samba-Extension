@@ -70,10 +70,13 @@
         <a class="nav-link active"  onclick="tab1()" href="#tab1" data-toggle="tab">FSMO Rol Yönetimi</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link " onclick="tab2()" href="#tab2"  data-toggle="tab">Migration İşlemi</a>
+        <a class="nav-link " onclick="tab2()" href="#tab2"  data-toggle="tab">Migration</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link " href="#tab3"  data-toggle="tab">LDAP İşlemleri</a>
+        <a class="nav-link "onclick="tab3()" href="#tab3"  data-toggle="tab">Kullanıcılar</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link "onclick="tab4()" href="#tab4"  data-toggle="tab">Bilgisayarlar</a>
     </li>
 </ul>
 
@@ -96,8 +99,12 @@
 
     <div id="tab3" class="tab-pane">
         <br />
-        <button class="btn btn-success mb-2" id="btn4" onclick="ldap()" type="button">Connect</button>
-      
+        <div class="table-responsive" id="usersTable"></div>
+    </div>
+
+    <div id="tab4" class="tab-pane">
+        <br />
+        <div class="table-responsive" id="computersTable"></div>
     </div>
     
 </div>
@@ -306,15 +313,36 @@
    
     
     // #### LDAP ####
-    function ldap(){
+
+    function tab3(){
+        showSwal('Yükleniyor...','info',2000);
         var form = new FormData();
-        
-        request(API('connect_ldap'), form, function(response) {
-            message = JSON.parse(response)["message"];
-            showSwal(message, 'info', 5000);
-            
-        }, function(error) {
-            showSwal(error.message, 'error', 5000);
+        request(API('list_users'), form, function(response) {
+            $('#usersTable').html(response).find('table').DataTable({
+            bFilter: true,
+            "language" : {
+                url : "/turkce.json"
+            }
+            });;
+        }, function(response) {
+            let error = JSON.parse(response);
+            showSwal(error.message, 'error', 3000);
+        });
+    }
+
+    function tab4(){
+        showSwal('Yükleniyor...','info',2000);
+        var form = new FormData();
+        request(API('list_computers'), form, function(response) {
+            $('#computersTable').html(response).find('table').DataTable({
+            bFilter: true,
+            "language" : {
+                url : "/turkce.json"
+            }
+            });;
+        }, function(response) {
+            let error = JSON.parse(response);
+            showSwal(error.message, 'error', 3000);
         });
     }
 
