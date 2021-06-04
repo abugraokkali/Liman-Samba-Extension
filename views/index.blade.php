@@ -78,6 +78,9 @@
     <li class="nav-item">
         <a class="nav-link "onclick="tab4()" href="#tab4"  data-toggle="tab">Bilgisayarlar</a>
     </li>
+    <li class="nav-item">
+        <a class="nav-link "onclick="tab5()" href="#tab5"  data-toggle="tab">Attributes</a>
+    </li>
 </ul>
 
 <div class="tab-content">
@@ -105,6 +108,11 @@
     <div id="tab4" class="tab-pane">
         <br />
         <div class="table-responsive" id="computersTable"></div>
+    </div>
+
+    <div id="tab5" class="tab-pane">
+        <br />
+        <div class="table-responsive" id="attributesTable"></div>
     </div>
     
 </div>
@@ -335,6 +343,21 @@
         var form = new FormData();
         request(API('list_computers'), form, function(response) {
             $('#computersTable').html(response).find('table').DataTable({
+            bFilter: true,
+            "language" : {
+                url : "/turkce.json"
+            }
+            });;
+        }, function(response) {
+            let error = JSON.parse(response);
+            showSwal(error.message, 'error', 3000);
+        });
+    }
+    function tab5(){
+        showSwal('Yükleniyor...','info',2000);
+        var form = new FormData();
+        request(API('list_attributes2'), form, function(response) {
+            $('#attributesTable').html(response).find('table').DataTable({
             bFilter: true,
             "language" : {
                 url : "/turkce.json"

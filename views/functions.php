@@ -191,5 +191,34 @@
         ]);
 
     }
+    function list_attributes(){
+        $ldap = connect();
+        $cn="administrator";
+
+        $dn_user="CN=".$cn;
+
+        $result = ldap_search($ldap, "DC=ali,DC=lab", $dn_user);
+        $entries = ldap_get_entries($ldap,$result);
+
+        $data=[];
+        for($i=0 ; $i<$entries[0]["count"] ; $i++){
+            $name = $entries[0][$i];
+            for($j=0 ; $j<$entries[0][$name]["count"] ; $j++){
+                $value = $entries[0][$name][$j];
+                $data[] = [
+                    "name" => $name,
+                    "value" => $value
+                ];
+            }
+        }
+        ldap_close($ldap);
+        return view('table', [
+            "value" => $data,
+            "title" => ["Attribute Name","Value"],
+            "display" => ["name","value"]
+        ]);
+
+    }
+
     
 ?>
