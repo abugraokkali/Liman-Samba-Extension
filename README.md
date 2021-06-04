@@ -2,8 +2,8 @@
 
 - FSMO Role Transfer and Seize
 - Migration
-- Users
-- Computers
-- Attributes
+- Users List
+- Computers List
+- Attributes Table
 
 Ali Buğra Okkalı 2021
