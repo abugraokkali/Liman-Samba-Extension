@@ -1,5 +1,9 @@
-# Liman-FSMO-Role-Management
+# Liman MYS Extension
 
-Liman FSMO Roleri Görüntüleme ve Transfer Eklentisi
+- FSMO Role Transfer and Seize
+- Migration
+- Users
+- Computers
+- Attributes
 
-Ali Buğra Okkalı
+Ali Buğra Okkalı 2021
