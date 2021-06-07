@@ -161,7 +161,7 @@
 
         return view('table', [
             "value" => $data,
-            "title" => ["Kullanıcılar"],
+            "title" => ["Users"],
             "display" => ["name"]
         ]);
 
@@ -186,7 +186,7 @@
 
         return view('table', [
             "value" => $data,
-            "title" => ["Bilgisayarlar"],
+            "title" => ["Computers"],
             "display" => ["name"]
         ]);
 

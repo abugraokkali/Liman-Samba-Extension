@@ -67,16 +67,16 @@
 
 <ul class="nav nav-tabs" role="tablist" style="margin-bottom: 15px;">
     <li class="nav-item">
-        <a class="nav-link active"  onclick="tab1()" href="#tab1" data-toggle="tab">FSMO Rol Yönetimi</a>
+        <a class="nav-link active"  onclick="tab1()" href="#tab1" data-toggle="tab">FSMO Role Management</a>
     </li>
     <li class="nav-item">
         <a class="nav-link " onclick="tab2()" href="#tab2"  data-toggle="tab">Migration</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link "onclick="tab3()" href="#tab3"  data-toggle="tab">Kullanıcılar</a>
+        <a class="nav-link "onclick="tab3()" href="#tab3"  data-toggle="tab">Users</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link "onclick="tab4()" href="#tab4"  data-toggle="tab">Bilgisayarlar</a>
+        <a class="nav-link "onclick="tab4()" href="#tab4"  data-toggle="tab">Computers</a>
     </li>
     <li class="nav-item">
         <a class="nav-link "onclick="tab5()" href="#tab5"  data-toggle="tab">Attributes</a>
@@ -356,7 +356,7 @@
     function tab5(){
         showSwal('Yükleniyor...','info',2000);
         var form = new FormData();
-        request(API('list_attributes2'), form, function(response) {
+        request(API('list_attributes'), form, function(response) {
             $('#attributesTable').html(response).find('table').DataTable({
             bFilter: true,
             "language" : {
