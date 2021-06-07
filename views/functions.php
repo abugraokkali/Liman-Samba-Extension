@@ -135,13 +135,7 @@
     function close($ldap){
         ldap_close($ldap);
     }
-    function ldapsearchuser($cn,$dn,$domainname,$ldap) {
-        $dn_user="CN=".$cn;
-        $search = ldap_search($ldap, $dn, $dn_user);
-        $info = ldap_get_entries($ldap, $search);
-        return $info;
-    }
-
+    
     function list_users(){
         $ldap = connect();
 
@@ -216,6 +210,36 @@
             "value" => $data,
             "title" => ["Attribute Name","Value"],
             "display" => ["name","value"]
+        ]);
+
+    }
+    function list_groups(){
+        $ldap = connect();
+        $groupType = request("groupType");
+        if($groupType == "none")
+            $filter="objectClass=group";
+        else if($groupType == "security")
+            $filter = "(&(objectCategory=group)(groupType:1.2.840.113556.1.4.803:=2147483648))";
+        else if($groupType == "distribution")
+            $filter = "(&(objectCategory=group)(!(groupType:1.2.840.113556.1.4.803:=2147483648)))";
+        
+        $result = ldap_search($ldap, "DC=ali,DC=lab", $filter);
+        $entries = ldap_get_entries($ldap,$result);
+
+        $count = ldap_count_entries($ldap, $result);
+        $data = [];
+        for($i=0 ; $i<$count ; $i++){
+            $nameItem = $entries[$i]["name"][0];
+            $data[] = [
+                "name" => $nameItem
+            ];
+        }
+        close($ldap);
+
+        return view('table', [
+            "value" => $data,
+            "title" => ["Groups"],
+            "display" => ["name"]
         ]);
 
     }
