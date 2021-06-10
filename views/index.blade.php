@@ -72,18 +72,7 @@
     <li class="nav-item">
         <a class="nav-link " onclick="tab2()" href="#tab2"  data-toggle="tab">Migration</a>
     </li>
-    <li class="nav-item">
-        <a class="nav-link "onclick="tab3()" href="#tab3"  data-toggle="tab">Users</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link "onclick="tab4()" href="#tab4"  data-toggle="tab">Computers</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link "onclick="tab5()" href="#tab5"  data-toggle="tab">Attributes</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link " href="#tab6"  data-toggle="tab">Groups</a>
-    </li>
+    
 </ul>
 
 <div class="tab-content">
@@ -103,33 +92,7 @@
         <button class="btn btn-success mb-2" id="btn3" onclick="showMigrationModal()" type="button">Migrate Et</button>
     </div>
 
-    <div id="tab3" class="tab-pane">
-        <br />
-        <div class="table-responsive" id="usersTable"></div>
-    </div>
-
-    <div id="tab4" class="tab-pane">
-        <br />
-        <div class="table-responsive" id="computersTable"></div>
-    </div>
-
-    <div id="tab5" class="tab-pane">
-        <br />
-        <div class="table-responsive" id="attributesTable"></div>
-    </div>
-
-    <div id="tab6" class="tab-pane">
-        <br />
-        <select name="groups" id="groupType">
-            <option value="none" >None</option>
-            <option value="security">Security Groups</option>
-            <option value="distribution">Distribution Groups</option>
-        </select>
-        <button class="btn btn-success mb-2" onclick="tab6()" id="btn4" type="button">List</button>
-        <br />
-        <br />
-        <div class="table-responsive" id="groupsTable"></div>
-    </div>
+    
     
 </div>
 
@@ -335,76 +298,4 @@
         });
     }
    
-    
-    // #### LDAP ####
-
-    function tab3(){
-        showSwal('Yükleniyor...','info',2000);
-        var form = new FormData();
-        request(API('list_users'), form, function(response) {
-            $('#usersTable').html(response).find('table').DataTable({
-            bFilter: true,
-            "language" : {
-                url : "/turkce.json"
-            }
-            });;
-        }, function(response) {
-            let error = JSON.parse(response);
-            showSwal(error.message, 'error', 3000);
-        });
-    }
-
-    function tab4(){
-        showSwal('Yükleniyor...','info',2000);
-        var form = new FormData();
-        request(API('list_computers'), form, function(response) {
-            $('#computersTable').html(response).find('table').DataTable({
-            bFilter: true,
-            "language" : {
-                url : "/turkce.json"
-            }
-            });;
-        }, function(response) {
-            let error = JSON.parse(response);
-            showSwal(error.message, 'error', 3000);
-        });
-    }
-
-    function tab5(){
-        showSwal('Yükleniyor...','info',2000);
-        var form = new FormData();
-        request(API('list_attributes'), form, function(response) {
-            $('#attributesTable').html(response).find('table').DataTable({
-            bFilter: true,
-            "language" : {
-                url : "/turkce.json"
-            }
-            });;
-        }, function(response) {
-            let error = JSON.parse(response);
-            showSwal(error.message, 'error', 3000);
-        });
-    }
-    
-    function tab6(){
-        showSwal('Yükleniyor...','info',2000);
-        var form = new FormData();
-        let e = document.getElementById("groupType");
-        var groupType = e.value;
-        form.append("groupType",groupType);
-
-        //console.log(selection);
-        request(API('list_groups'), form, function(response) {
-            $('#groupsTable').html(response).find('table').DataTable({
-            bFilter: true,
-            "language" : {
-                url : "/turkce.json"
-            }
-            });;
-        }, function(response) {
-            let error = JSON.parse(response);
-            showSwal(error.message, 'error', 3000);
-        });
-    }
-
 </script>
