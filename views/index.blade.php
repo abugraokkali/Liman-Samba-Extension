@@ -64,6 +64,24 @@
     ])
 @endcomponent
 
+@component('modal-component',[
+        "id" => "migrationModal2",
+        "title" => "Giriş",
+        "footer" => [
+            "text" => "OK",
+            "class" => "btn-success",
+            "onclick" => "hideMigrationModal2()"
+        ]
+    ])
+    @include('inputs', [
+        "inputs" => [
+            "IP Addresi" => "ipAddr:text",
+            "Kullanıcı Adı" => "username:text",
+            "Şifre" => "password:password",
+            "İstenilen Site" => "site:site"
+        ]
+    ])
+@endcomponent
 
 <ul class="nav nav-tabs" role="tablist" style="margin-bottom: 15px;">
     <li class="nav-item">
@@ -90,6 +108,8 @@
         <div class="text-area" id="textarea"></div>
         <br />
         <button class="btn btn-success mb-2" id="btn3" onclick="showMigrationModal()" type="button">Migrate Et</button>
+        <button class="btn btn-success mb-2" id="btn4" onclick="showMigrationModal2()" type="button">Migrate Et - Site</button>
+        <pre id="migrationInfo">   </pre>
     </div>
 
     
@@ -97,12 +117,10 @@
 </div>
 
 <script>
-
    if(location.hash === ""){
         tab1();
     }
     // #### Tab1 FSMO ####
-
     // == Printing Table ==
     function tab1(){
         showSwal('Yükleniyor...','info',2000);
@@ -125,7 +143,6 @@
         var form = new FormData();
         let contraction = line.querySelector("#contraction").innerHTML;
         form.append("contraction",contraction);
-
         request(API('takeTheRole'), form, function(response) {
             message = JSON.parse(response)["message"];
             if(message.includes("successful")){
@@ -139,7 +156,6 @@
                 showSwal('WERR_FILE_NOT_FOUND \nTrying to seize... ','info',5000);
                 showWarningModal();
                 temp=contraction;
-
             }                
             else{
                 showSwal(message, 'error', 7000);
@@ -148,7 +164,6 @@
             showSwal(error.message, 'error', 5000);
         });
     }
-
     // == Information Modal ==
     function showInfoModal(line){
         showSwal('Yükleniyor...','info',3500);
@@ -161,14 +176,12 @@
             $('#infoModal').modal("show");
         }, function(error) {
             showSwal(error.message, 'error', 5000);
-
         });
     }
     function hideInfoModal(line){
         $('#infoModal').modal("hide");
         tab1();
     }
-
     // == Change Modal ==
     function showChangeModal(){
         showSwal('Yükleniyor...','info',2000);
@@ -236,31 +249,30 @@
         showSwal('Yükleniyor...','info',2000);
         $('#warningModal').modal("hide");
     }
-
-
     // #### Tab2 Migration ####
-
     function tab2(){
         var form = new FormData();
         let x = document.getElementById("btn3");
+        let y = document.getElementById("btn4");
         x.disabled = true;
+        y.disabled = true;
         $('#textarea').html("Sunucu kontrol ediliyor lütfen bekleyiniz ... ");
-
         request(API('check'), form, function(response) {
             message = JSON.parse(response)["message"];
             if(message==false){
                 x.disabled = true;
+                y.disabled = true;
                 $('#textarea').html("Bu sunucu bu işlem için uygun değil.");
             }
             else{
                 x.disabled = false;
+                y.disabled = false;
                 $('#textarea').html("Migration işlemi için aşağıdaki butonu kullanabilirsiniz.");
             }
         }, function(error) {
             showSwal(error.message, 'error', 5000);
         });
     }
-
     //== Migration Modal ==
     function showMigrationModal(){
         showSwal('Yükleniyor...','info',2000);
@@ -290,11 +302,49 @@
             }
             else{
                 showSwal('Migration başarısız...', 'error', 7000);
-
             }
-
         }, function(error) {
             showSwal(error.message, 'error', 5000);
+        });
+    }
+    function showMigrationModal2(){
+        showSwal('Yükleniyor...','info',2000);
+        $('#migrationModal2').modal("show");
+    }
+    function hideMigrationModal2(){
+        var form = new FormData();
+        $('#migrationModal2').modal("hide");
+        form.append("ip", $('#migrationModal2').find('input[name=ipAddr]').val());
+        form.append("username", $('#migrationModal2').find('input[name=username]').val());
+        form.append("password", $('#migrationModal2').find('input[name=password]').val());
+        form.append("site", $('#migrationModal2').find('input[name=site]').val());
+        showSwal('İşleminiz kontrol ediliyor...', 'info', 10000);
+        request(API('migrate2'), form, function(response) {
+            showSwal('Migrate islemi basladi...', 'info', 3000);
+            migrateLog("");
+        }, function(response){
+          let error = JSON.parse(response);
+          showSwal(error.message,'error',2000);
+        });
+    }
+    function migrateLog(){
+        var form = new FormData();
+        request(API('migrateLog'), form, function(response) {
+            message = JSON.parse(response)["message"];
+            if(message != "bitti"){
+                console.log(message);
+                $("#migrationInfo").text(message);
+                setTimeout(() => {
+                    migrateLog();
+                }, 100);
+            }
+            else{
+                showSwal("Migrate basari ile tamamlandi!",'success',2000);
+                tab2();
+            }
+        }, function(response){
+          let error = JSON.parse(response);
+          showSwal(error.message,'error',2000);
         });
     }
    

@@ -74,7 +74,7 @@
         $ip = request("ip");
         $username = request("username");
         $password = request("password");
-        runCommand(sudo()."smb-migrate-domain -s ".$ip." -a ".$username." -p ".$password,200);
+        runCommand(sudo()."smb-migrate-domain -s ".$ip." -a ".$username." -p ".$password." 2>&1 > /tmp/smb-migrate-logs.txt",200);
 
         if(check2() == true){
             //migrate edilebilir yani migrate edilmemiş.
@@ -86,6 +86,26 @@
         
 
     }
+    function migrate2(){
+        $ip = request("ip");
+        $username = request("username");
+        $password = request("password");
+        $site = request("site");
+
+        $command = "smb-migrate-domain -s ".$ip." -a ".$username." -p ".$password." -t ".$site." 2>&1 > /tmp/smb-migrate-logs.txt";
+        runCommand(sudo().$command);
+        return respond("Success", 200);
+    }
+
+    function migrateLog(){
+
+        $log = runCommand(sudo() . 'cat /tmp/smb-migrate-logs.txt');
+        if(str_contains($log, "servisler yeniden başlatılıyor")){
+            return respond("bitti", 200);
+        }
+        return respond($log, 200);
+    }
+
     function check(){
         //check => true ise migrate edilebilir.
         $output=runCommand(sudo()."net ads info",200);
